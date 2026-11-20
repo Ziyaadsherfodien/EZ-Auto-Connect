@@ -76,3 +76,53 @@ For each lender submission, dealership staff select Pending, Approved or Decline
 The administrator CRM includes a **Finance Decisions** workspace with lender and decision filters, customer/dealership references, decision counts and short-lived signed links to the private PDF evidence. Dealership proposal history also displays the selected finance house and recorded decision.
 
 These are dealership-recorded outcomes and uploaded evidence; the integration does not directly query lender systems or independently verify a lender's decision.
+
+
+## Customer WhatsApp and email finance alerts
+
+The finance notification workflow is connected to dealership proposal submission:
+- A new pending finance document creates a **Document received — pending** event.
+- A lender decision recorded as approved creates an **Approved** event.
+- A lender decision recorded as declined creates a **Declined** event.
+- The customer receives WhatsApp and/or email only where they have explicitly opted in under **Notification preferences** in their verified profile.
+- The active EZ administrator profile receives an internal WhatsApp and email alert using the administrator phone and email stored in `app.user_profiles`.
+- The customer's PDF is never attached to an alert or exposed through a public URL. The customer signs in to the verified profile to view the private document.
+- `app.finance_notification_deliveries` records channel, recipient, provider ID, status and errors. A unique proposal/event/channel/recipient key prevents duplicate sends.
+- Notifications are dispatched by the `finance-notify` Edge Function, called server-to-server by `dealer-portal`. Provider credentials are never placed in frontend code.
+
+### Required provider setup before messages can be delivered
+
+Configure these as **Supabase Edge Function secrets** (never commit them to GitHub or paste them into chat):
+- `WHATSAPP_ACCESS_TOKEN` — Meta WhatsApp Cloud API access token.
+- `WHATSAPP_PHONE_NUMBER_ID` — ID of the dedicated WhatsApp API sending number.
+- `WHATSAPP_API_VERSION` — current supported Graph API version, e.g. the version selected in the Meta app.
+- `WHATSAPP_CUSTOMER_TEMPLATE` — approved Meta template name; default expected name: `ez_finance_customer_update`.
+- `WHATSAPP_ADMIN_TEMPLATE` — approved Meta template name; default expected name: `ez_finance_admin_alert`.
+- `WHATSAPP_TEMPLATE_LANGUAGE` — template language code; default: `en`.
+- `RESEND_API_KEY` — Resend transactional email API key.
+- `NOTIFICATION_FROM_EMAIL` — sender address on a domain verified with Resend.
+- `EZ_CUSTOMER_PORTAL_URL` — optional live customer portal URL included in email alerts.
+
+Create and obtain Meta approval for these WhatsApp Utility templates. The customer template body should use five body variables in this order:
+1. Customer name
+2. Vehicle description
+3. Dealership name
+4. Finance house
+5. Decision label
+
+Suggested customer template:
+`Hi {{1}}, EZ Auto Connect has an update on your {{2}} from {{3}}. Finance house: {{4}}. Status: {{5}}. Sign in to your verified profile to view the document securely.`
+
+The administrator template should also use five body variables in the same order:
+`Finance update for {{1}}: {{2}} at {{3}}, finance house {{4}}, status {{5}}. Check the EZ Auto Connect CRM for the customer record.`
+
+Customers must have opted in before WhatsApp notifications are sent. Keep the WhatsApp consent wording and privacy notice aligned with the actual notification purpose. The API sends the notification directly to the intended customer's number; it does not rely on a phone app forwarding messages.
+
+### Current activation status
+
+- Database preferences and delivery log: deployed.
+- `finance-notify` Edge Function: deployed.
+- Dealer portal dispatch hook: deployed in `dealer-portal`.
+- Customer notification preference controls: committed in `customer.html`; customer API supports saving consent.
+- External sending is **not active until Meta templates are approved and the provider secrets above are configured**.
+- Cloudflare Worker frontend deployment and authenticated end-to-end delivery tests still need to be completed after provider setup.
