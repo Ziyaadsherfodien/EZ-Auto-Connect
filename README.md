@@ -53,3 +53,11 @@ The calculator is an indicative screening tool, not a bank approval, credit deci
 - `customer.html` — customer registration, sign-in, ID verification and proposal comparison
 - `dealer.html` — dealership login, allocated enquiries and quotation submission
 - `admin.html` — administrator CRM and customer verification queue
+
+
+## Finance estimates and dealership quotation controls
+
+- Public enquiry calculator uses the live `app.prime_rate_settings` value to estimate a monthly instalment from a vehicle cash price, or estimate an indicative vehicle cash price from a customer's maximum monthly instalment.
+- Customer estimates assume 72 months, no balloon and the entered deposit. They are indicative only and are not finance approvals or lender quotations.
+- Dealerships must enter actual vehicle selling price and actual finance-house quotation figures. The dealer portal requires the finance house, quotation reference, confirmation that figures are actual (not estimates), and upload of the supporting quotation (PDF/JPG/PNG, maximum 10 MB).
+- Supporting quotations are stored in the private `finance-quotation-documents` bucket. The dealer submission endpoint rejects missing or invalid evidence.
