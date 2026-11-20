@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Compare vehicle options and finance quotes from participating dealerships with one enquiry. EZ Auto Connect is an independent vehicle enquiry referral service.">
+<title>EZ Auto Connect | One enquiry. More choice.</title>
+<style>
+:root{--ink:#111318;--muted:#69707d;--line:#e4e7ec;--silver:#c7cbd2;--blue:#315efb;--bg:#f5f6f8}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:white;line-height:1.55}a{color:inherit}.wrap{width:min(1120px,92%);margin:auto}
+header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;background:#fff}.nav{display:flex;justify-content:space-between;align-items:center}.brand{font-weight:900;letter-spacing:1.6px;font-size:19px}.brand span{color:#7e8490}.nav a{font-size:14px;text-decoration:none;color:#424854}
+.hero{background:linear-gradient(115deg,#111318,#292e38);color:#fff;padding:86px 0 78px}.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:50px;align-items:center}.eyebrow{text-transform:uppercase;letter-spacing:2px;color:#c4c9d2;font-size:12px;font-weight:700}.hero h1{font-size:clamp(38px,5vw,62px);line-height:1.06;letter-spacing:-2px;margin:18px 0}.hero p{font-size:18px;color:#d0d4dc;max-width:620px}.hero-card{border:1px solid #555b66;background:#ffffff0b;border-radius:18px;padding:26px}.hero-card strong{font-size:18px}.hero-card li{margin:12px 0;color:#d7dbe2}.btn{display:inline-block;border:0;border-radius:9px;padding:14px 22px;background:var(--blue);color:white;font-weight:700;text-decoration:none;cursor:pointer}.hero .btn{margin-top:18px}.section{padding:70px 0}.section h2{font-size:34px;letter-spacing:-1px;margin:0 0 12px}.intro{color:var(--muted);max-width:700px}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}.step{border:1px solid var(--line);border-radius:14px;padding:24px}.num{font-weight:800;color:var(--blue);font-size:13px}.step h3{margin:8px 0}.step p{color:var(--muted);font-size:14px}
+.form-section{background:var(--bg)}.form-layout{display:grid;grid-template-columns:.72fr 1.28fr;gap:42px;align-items:start}.form-note{color:var(--muted)}form{background:white;border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:0 12px 35px #1720330a}.fields{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:700;color:#343a45}input,select,textarea{width:100%;border:1px solid #d8dce3;border-radius:8px;padding:12px;font:inherit;background:white;color:var(--ink)}textarea{min-height:90px;resize:vertical}.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#515866;margin:18px 0}.consent input{width:auto;margin-top:4px}.hint{font-size:12px;color:var(--muted)}.status{margin-top:14px;font-size:14px;font-weight:600}.status.error{color:#b42318}.status.ok{color:#067647}.hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+footer{background:#111318;color:#c5cad2;padding:30px 0;font-size:13px}footer p{max-width:900px}.footer-brand{color:white;font-weight:800;letter-spacing:1.5px}
+@media(max-width:760px){.hero{padding:60px 0}.hero-grid,.form-layout{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.section{padding:52px 0}.hero h1{letter-spacing:-1px}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><div class="brand">EZ <span>AUTO CONNECT</span></div><a href="#how">How it works</a></div></header>
+<main>
+<section class="hero"><div class="wrap hero-grid"><div><div class="eyebrow">A smarter way to shop for your next vehicle</div><h1>One enquiry.<br>More choice. Less running around.</h1><p>Tired of visiting different dealerships, only to receive different instalment quotes for the same vehicle? Tell us what you're looking for once and compare options from participating dealerships.</p><a class="btn" href="#enquiry">Start your vehicle enquiry</a></div><aside class="hero-card"><strong>Take control of your vehicle search</strong><ul><li>Share your requirements in one place</li><li>Hear from participating dealership partners</li><li>Compare available vehicle and finance proposals</li><li>Choose the option that works best for you</li></ul></aside></div></section>
+<section class="section" id="how"><div class="wrap"><div class="eyebrow" style="color:#315efb">Simple by design</div><h2>How EZ Auto Connect works</h2><p class="intro">You stay in control. Your enquiry is shared with relevant participating dealerships only after you give consent.</p><div class="steps"><article class="step"><div class="num">STEP 01</div><h3>Tell us what you need</h3><p>Complete one short enquiry with your vehicle preferences and budget.</p></article><article class="step"><div class="num">STEP 02</div><h3>Connect with dealers</h3><p>With your permission, your enquiry can be referred to relevant dealership partners.</p></article><article class="step"><div class="num">STEP 03</div><h3>Compare your options</h3><p>Review the proposals you receive and decide which option suits you.</p></article></div></div></section>
+<section class="section form-section" id="enquiry"><div class="wrap form-layout"><div><div class="eyebrow" style="color:#315efb">Get started</div><h2>Let's find your next vehicle.</h2><p class="form-note">Complete the form and our team will use your requirements to route your enquiry to relevant participating dealerships, subject to your consent.</p><p class="hint">Submitting an enquiry does not guarantee vehicle availability, finance approval or a particular instalment.</p></div>
+<form id="leadForm"><div class="fields">
+<div class="field"><label for="name">Full name *</label><input id="name" name="full_name" autocomplete="name" required maxlength="120"></div>
+<div class="field"><label for="mobile">Mobile number *</label><input id="mobile" name="mobile" type="tel" autocomplete="tel" required maxlength="30"></div>
+<div class="field"><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" maxlength="180"></div>
+<div class="field"><label for="province">Province *</label><select id="province" name="province" required><option value="">Select province</option><option>Western Cape</option><option>Eastern Cape</option><option>Northern Cape</option><option>Gauteng</option><option>KwaZulu-Natal</option><option>Free State</option><option>North West</option><option>Mpumalanga</option><option>Limpopo</option></select></div>
+<div class="field"><label for="city">City / town *</label><input id="city" name="city" required maxlength="100"></div>
+<div class="field"><label for="condition">Vehicle condition</label><select id="condition" name="vehicle_condition"><option value="either">New or used</option><option value="new">New</option><option value="used">Used</option></select></div>
+<div class="field"><label for="make">Preferred make</label><input id="make" name="vehicle_make" maxlength="80" placeholder="e.g. Toyota"></div>
+<div class="field"><label for="model">Preferred model / type</label><input id="model" name="vehicle_model" maxlength="100" placeholder="e.g. Corolla Cross / SUV"></div>
+<div class="field"><label for="timeframe">When do you want to buy?</label><select id="timeframe" name="timeframe"><option value="">Select timeframe</option><option>Immediately</option><option>Within 30 days</option><option>1–3 months</option><option>3–6 months</option><option>Just researching</option></select></div>
+<div class="field"><label for="budget">Approximate vehicle budget (R)</label><input id="budget" name="vehicle_budget" type="number" min="0" step="1000"></div>
+<div class="field"><label for="instalment">Preferred monthly instalment (R)</label><input id="instalment" name="monthly_budget" type="number" min="0" step="100"></div>
+<div class="field"><label for="deposit">Deposit available (R)</label><input id="deposit" name="deposit" type="number" min="0" step="500"></div>
+<div class="field"><label for="trade">Do you have a trade-in?</label><select id="trade" name="has_trade_in"><option value="no">No</option><option value="yes">Yes</option></select></div>
+<div class="field"><label for="tradeDetails">Trade-in details (optional)</label><input id="tradeDetails" name="trade_in_details" maxlength="180" placeholder="Year, make, model"></div>
+<div class="field full"><label for="notes">Anything else we should know?</label><textarea id="notes" name="notes" maxlength="1500" placeholder="Tell us about the vehicle you're looking for."></textarea></div>
+<div class="hp" aria-hidden="true"><label for="website">Leave this field empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+</div>
+<label class="consent"><input type="checkbox" id="consent" required><span>I consent to EZ Auto Connect using my information to process this enquiry and sharing the relevant details with selected participating dealership partners so they can contact me about my vehicle enquiry. I understand I can withdraw consent by contacting EZ Auto Connect. *</span></label>
+<p class="hint">Please do not submit identity documents, payslips or bank statements through this form.</p>
+<button class="btn" id="submitBtn" type="submit">Submit my enquiry</button><div id="formStatus" class="status" role="status" aria-live="polite"></div>
+</form></div></section>
+</main>
+<footer><div class="wrap"><div class="footer-brand">EZ AUTO CONNECT</div><p>EZ Auto Connect is an independent vehicle enquiry referral service. We are not a dealership, lender or credit provider, do not make credit decisions and cannot guarantee finance approval, vehicle availability or any quoted instalment. Any finance application is subject to the relevant finance provider's assessment and approval. Your enquiry details are shared with participating dealership partners only in line with the consent you provide.</p><p>Privacy notice and dealership partner terms should be reviewed and published before broad public marketing.</p><p>© <span id="year"></span> EZ Auto Connect</p></div></footer>
+<script>
+const ENDPOINT = "https://gxdvlinvfagdhhsrhwar.supabase.co/functions/v1/lead-intake";
+document.getElementById("year").textContent = new Date().getFullYear();
+const form = document.getElementById("leadForm");
+const statusBox = document.getElementById("formStatus");
+const submitBtn = document.getElementById("submitBtn");
+form.addEventListener("submit", async (event) => {
+ event.preventDefault();
+ statusBox.className = "status"; statusBox.textContent = "";
+ if (!document.getElementById("consent").checked) { statusBox.className="status error"; statusBox.textContent="Please provide consent before submitting."; return; }
+ const f = new FormData(form);
+ const payload = {
+  full_name:f.get("full_name"), mobile:f.get("mobile"), email:f.get("email"),
+  province:f.get("province"), city:f.get("city"), vehicle_condition:f.get("vehicle_condition"),
+  vehicle_make:f.get("vehicle_make"), vehicle_model:f.get("vehicle_model"),
+  timeframe:f.get("timeframe"), vehicle_budget:f.get("vehicle_budget") ? Number(f.get("vehicle_budget")) : null,
+  monthly_budget:f.get("monthly_budget") ? Number(f.get("monthly_budget")) : null,
+  deposit:f.get("deposit") ? Number(f.get("deposit")) : null,
+  has_trade_in:f.get("has_trade_in")==="yes", trade_in_details:f.get("trade_in_details"),
+  notes:f.get("notes"), website:f.get("website"),
+  consent:true, consent_text:"I consent to EZ Auto Connect using my information to process this enquiry and sharing the relevant details with selected participating dealership partners so they can contact me about my vehicle enquiry.",
+  consent_version:"dealer-sharing-v1", source:"website"
+ };
+ submitBtn.disabled=true; submitBtn.textContent="Submitting…";
+ try {
+  const response=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok) throw new Error(data.error || data.message || "We could not submit your enquiry. Please try again.");
+  statusBox.className="status ok";
+  statusBox.textContent="Thank you. Your enquiry has been received."+(data.reference ? " Reference: "+data.reference : "");
+  form.reset();
+ } catch(error) {
+  statusBox.className="status error";
+  statusBox.textContent=error.message || "Connection problem. Please try again.";
+ } finally {submitBtn.disabled=false;submitBtn.textContent="Submit my enquiry";}
+});
+</script>
+</body></html>
