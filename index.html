@@ -28,12 +28,12 @@ footer{background:#111318;color:#c5cad2;padding:30px 0;font-size:13px}footer p{m
 <div class="field"><label for="province">Province *</label><select id="province" name="province" required><option value="">Select province</option><option>Western Cape</option><option>Eastern Cape</option><option>Northern Cape</option><option>Gauteng</option><option>KwaZulu-Natal</option><option>Free State</option><option>North West</option><option>Mpumalanga</option><option>Limpopo</option></select></div>
 <div class="field"><label for="city">City / town *</label><input id="city" name="city" required maxlength="100"></div>
 <div class="field"><label for="condition">Vehicle condition</label><select id="condition" name="vehicle_condition"><option value="either">New or used</option><option value="new">New</option><option value="used">Used</option></select></div>
-<div class="field"><label for="make">Preferred make</label><input id="make" name="vehicle_make" maxlength="80" placeholder="e.g. Toyota"></div>
-<div class="field"><label for="model">Preferred model / type</label><input id="model" name="vehicle_model" maxlength="100" placeholder="e.g. Corolla Cross / SUV"></div>
-<div class="field"><label for="timeframe">When do you want to buy?</label><select id="timeframe" name="timeframe"><option value="">Select timeframe</option><option>Immediately</option><option>Within 30 days</option><option>1–3 months</option><option>3–6 months</option><option>Just researching</option></select></div>
-<div class="field"><label for="budget">Approximate vehicle budget (R)</label><input id="budget" name="vehicle_budget" type="number" min="0" step="1000"></div>
-<div class="field"><label for="instalment">Preferred monthly instalment (R)</label><input id="instalment" name="monthly_budget" type="number" min="0" step="100"></div>
-<div class="field"><label for="deposit">Deposit available (R)</label><input id="deposit" name="deposit" type="number" min="0" step="500"></div>
+<div class="field"><label for="make">Preferred make</label><input id="make" name="preferred_make" maxlength="80" placeholder="e.g. Toyota"></div>
+<div class="field"><label for="model">Preferred model / type</label><input id="model" name="preferred_model" maxlength="100" placeholder="e.g. Corolla Cross / SUV"></div>
+<div class="field"><label for="timeframe">When do you want to buy?</label><select id="timeframe" name="timeframe"><option value="researching">Just researching</option><option value="immediately">Immediately</option><option value="within_7_days">Within 7 days</option><option value="within_30_days">Within 30 days</option><option value="within_3_months">Within 3 months</option></select></div>
+<div class="field"><label for="budget">Approximate vehicle budget (R)</label><input id="budget" name="budget_max" type="number" min="0" step="1000"></div>
+<div class="field"><label for="instalment">Preferred monthly instalment (R)</label><input id="instalment" name="monthly_payment_max" type="number" min="0" step="100"></div>
+<div class="field"><label for="deposit">Deposit available (R)</label><input id="deposit" name="deposit_max" type="number" min="0" step="500"></div>
 <div class="field"><label for="trade">Do you have a trade-in?</label><select id="trade" name="has_trade_in"><option value="no">No</option><option value="yes">Yes</option></select></div>
 <div class="field"><label for="tradeDetails">Trade-in details (optional)</label><input id="tradeDetails" name="trade_in_details" maxlength="180" placeholder="Year, make, model"></div>
 <div class="field full"><label for="notes">Anything else we should know?</label><textarea id="notes" name="notes" maxlength="1500" placeholder="Tell us about the vehicle you're looking for."></textarea></div>
@@ -59,13 +59,13 @@ form.addEventListener("submit", async (event) => {
  const payload = {
   full_name:f.get("full_name"), mobile:f.get("mobile"), email:f.get("email"),
   province:f.get("province"), city:f.get("city"), vehicle_condition:f.get("vehicle_condition"),
-  vehicle_make:f.get("vehicle_make"), vehicle_model:f.get("vehicle_model"),
-  timeframe:f.get("timeframe"), vehicle_budget:f.get("vehicle_budget") ? Number(f.get("vehicle_budget")) : null,
-  monthly_budget:f.get("monthly_budget") ? Number(f.get("monthly_budget")) : null,
-  deposit:f.get("deposit") ? Number(f.get("deposit")) : null,
+  preferred_make:f.get("preferred_make"), preferred_model:f.get("preferred_model"),
+  purchase_timeframe:f.get("timeframe"), budget_max:f.get("budget_max") ? Number(f.get("budget_max")) : null,
+  monthly_payment_max:f.get("monthly_payment_max") ? Number(f.get("monthly_payment_max")) : null,
+  deposit_max:f.get("deposit_max") ? Number(f.get("deposit_max")) : null,
   has_trade_in:f.get("has_trade_in")==="yes", trade_in_details:f.get("trade_in_details"),
   notes:f.get("notes"), website:f.get("website"),
-  consent:true, consent_text:"I consent to EZ Auto Connect using my information to process this enquiry and sharing the relevant details with selected participating dealership partners so they can contact me about my vehicle enquiry.",
+  dealer_sharing_consent:true, consent_text:"I consent to EZ Auto Connect using my information to process this enquiry and sharing the relevant details with selected participating dealership partners so they can contact me about my vehicle enquiry.",
   consent_version:"dealer-sharing-v1", source:"website"
  };
  submitBtn.disabled=true; submitBtn.textContent="Submitting…";
