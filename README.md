@@ -61,3 +61,18 @@ The calculator is an indicative screening tool, not a bank approval, credit deci
 - Customer estimates assume 72 months, no balloon and the entered deposit. They are indicative only and are not finance approvals or lender quotations.
 - Dealerships must enter actual vehicle selling price and actual finance-house quotation figures. The dealer portal requires the finance house, quotation reference, confirmation that figures are actual (not estimates), and upload of the supporting quotation (PDF/JPG/PNG, maximum 10 MB).
 - Supporting quotations are stored in the private `finance-quotation-documents` bucket. The dealer submission endpoint rejects missing or invalid evidence.
+
+
+## Finance house decision tracking
+
+The dealership portal now provides a controlled finance-house dropdown for:
+- WesBank
+- MFC
+- Absa Vehicle Finance
+- Standard Bank Vehicle Finance
+
+For each lender submission, dealership staff select Pending, Approved or Declined, enter the actual quotation reference, and upload the official decision document as a PDF (maximum 10 MB). The backend independently validates the lender, decision, allocation ownership, customer identity approval and PDF file type. Pending is stored using the existing `indicative` database value for backward compatibility.
+
+The administrator CRM includes a **Finance Decisions** workspace with lender and decision filters, customer/dealership references, decision counts and short-lived signed links to the private PDF evidence. Dealership proposal history also displays the selected finance house and recorded decision.
+
+These are dealership-recorded outcomes and uploaded evidence; the integration does not directly query lender systems or independently verify a lender's decision.
