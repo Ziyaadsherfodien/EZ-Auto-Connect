@@ -31,9 +31,11 @@ footer{background:#111318;color:#c5cad2;padding:30px 0;font-size:13px}footer p{m
 <div class="field"><label for="make">Preferred make</label><input id="make" name="preferred_make" maxlength="80" placeholder="e.g. Toyota"></div>
 <div class="field"><label for="model">Preferred model / type</label><input id="model" name="preferred_model" maxlength="100" placeholder="e.g. Corolla Cross / SUV"></div>
 <div class="field"><label for="timeframe">When do you want to buy?</label><select id="timeframe" name="timeframe"><option value="researching">Just researching</option><option value="immediately">Immediately</option><option value="within_7_days">Within 7 days</option><option value="within_30_days">Within 30 days</option><option value="within_3_months">Within 3 months</option></select></div>
-<div class="field"><label for="budget">Approximate vehicle budget (R)</label><input id="budget" name="budget_max" type="number" min="0" step="1000"></div>
-<div class="field"><label for="instalment">Preferred monthly instalment (R)</label><input id="instalment" name="monthly_payment_max" type="number" min="0" step="100"></div>
-<div class="field"><label for="deposit">Deposit available (R)</label><input id="deposit" name="deposit_max" type="number" min="0" step="500"></div>
+<div class="field full"><label for="estimateMode">What would you like to calculate?</label><select id="estimateMode"><option value="price">Estimated instalment from vehicle cash price</option><option value="payment">Vehicle cash price from my maximum instalment</option></select></div>
+<div class="field" id="budgetField"><label for="budget">Vehicle cash price (R)</label><input id="budget" name="budget_max" type="number" min="1" step="1000" placeholder="e.g. 200000"></div>
+<div class="field hidden" id="instalmentField"><label for="instalment">Maximum monthly instalment (R)</label><input id="instalment" name="monthly_payment_max" type="number" min="1" step="50" placeholder="e.g. 2000"></div>
+<div class="field"><label for="deposit">Deposit available (R)</label><input id="deposit" name="deposit_max" type="number" min="0" step="500" value="0"></div>
+<div class="field full" id="estimateCard" style="background:#f1f3f6;border:1px solid #d8dce3;border-radius:10px;padding:16px;display:none"><strong id="estimateTitle">Your indicative estimate</strong><div id="estimateValue" style="font-size:28px;font-weight:800;margin:5px 0;color:#111318">—</div><div id="estimateAssumption" class="hint"></div></div>
 <div class="field"><label for="trade">Do you have a trade-in?</label><select id="trade" name="has_trade_in"><option value="no">No</option><option value="yes">Yes</option></select></div>
 <div class="field"><label for="tradeDetails">Trade-in details (optional)</label><input id="tradeDetails" name="trade_in_details" maxlength="180" placeholder="Year, make, model"></div>
 <div class="field full"><label for="notes">Anything else we should know?</label><textarea id="notes" name="notes" maxlength="1500" placeholder="Tell us about the vehicle you're looking for."></textarea></div>
@@ -49,19 +51,47 @@ footer{background:#111318;color:#c5cad2;padding:30px 0;font-size:13px}footer p{m
 const ENDPOINT = "https://gxdvlinvfagdhhsrhwar.supabase.co/functions/v1/lead-intake";
 document.getElementById("year").textContent = new Date().getFullYear();
 const form = document.getElementById("leadForm");
+const estimateMode=document.getElementById("estimateMode"),budgetInput=document.getElementById("budget"),instalmentInput=document.getElementById("instalment"),depositInput=document.getElementById("deposit");
+let currentPrime=10.75,primeEffective="system rate";
+function monthlyPayment(principal,annualRate,months=72){const r=annualRate/1200;if(principal<=0)return 0;return r===0?principal/months:principal*r/(1-Math.pow(1+r,-months));}
+function affordablePrincipal(payment,annualRate,months=72){const r=annualRate/1200;return r===0?payment*months:payment*(1-Math.pow(1+r,-months))/r;}
+function updateEstimate(){
+ const mode=estimateMode.value,deposit=Math.max(0,Number(depositInput.value)||0),card=document.getElementById("estimateCard");
+ document.getElementById("budgetField").classList.toggle("hidden",mode!=="price");
+ document.getElementById("instalmentField").classList.toggle("hidden",mode!=="payment");
+ budgetInput.required=mode==="price";instalmentInput.required=mode==="payment";
+ const entered=mode==="price"?Number(budgetInput.value):Number(instalmentInput.value);
+ if(!entered||entered<=0){card.style.display="none";return;}
+ card.style.display="block";
+ if(mode==="price"){
+  const payment=monthlyPayment(Math.max(0,entered-deposit),currentPrime);
+  document.getElementById("estimateTitle").textContent="Estimated monthly instalment";
+  document.getElementById("estimateValue").textContent="R "+payment.toLocaleString("en-ZA",{minimumFractionDigits:0,maximumFractionDigits:0})+" / month";
+  document.getElementById("estimateAssumption").textContent="Based on cash price R "+entered.toLocaleString("en-ZA")+" less deposit R "+deposit.toLocaleString("en-ZA")+", 72 months, no balloon and prime "+currentPrime.toFixed(2)+"% (effective "+primeEffective+").";
+ }else{
+  const principal=affordablePrincipal(entered,currentPrime),cashPrice=principal+deposit;
+  document.getElementById("estimateTitle").textContent="Estimated vehicle cash price you could afford";
+  document.getElementById("estimateValue").textContent="R "+cashPrice.toLocaleString("en-ZA",{maximumFractionDigits:0});
+  document.getElementById("estimateAssumption").textContent="Based on maximum instalment R "+entered.toLocaleString("en-ZA")+", plus deposit R "+deposit.toLocaleString("en-ZA")+", 72 months, no balloon and prime "+currentPrime.toFixed(2)+"% (effective "+primeEffective+").";
+ }
+}
+[estimateMode,budgetInput,instalmentInput,depositInput].forEach(el=>el.addEventListener("input",updateEstimate));
+estimateMode.addEventListener("change",updateEstimate);
+fetch("https://gxdvlinvfagdhhsrhwar.supabase.co/functions/v1/lead-intake",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"finance_estimate"})}).then(r=>r.json()).then(d=>{if(d.prime_rate){currentPrime=Number(d.prime_rate);primeEffective=d.effective_from||"system rate";updateEstimate();}}).catch(updateEstimate);
 const statusBox = document.getElementById("formStatus");
 const submitBtn = document.getElementById("submitBtn");
 form.addEventListener("submit", async (event) => {
  event.preventDefault();
  statusBox.className = "status"; statusBox.textContent = "";
+ if ((estimateMode.value==="price" && !(Number(budgetInput.value)>0)) || (estimateMode.value==="payment" && !(Number(instalmentInput.value)>0))) { statusBox.className="status error"; statusBox.textContent="Enter a vehicle cash price or maximum monthly instalment to calculate your estimate."; return; }
  if (!document.getElementById("consent").checked) { statusBox.className="status error"; statusBox.textContent="Please provide consent before submitting."; return; }
  const f = new FormData(form);
  const payload = {
   full_name:f.get("full_name"), mobile:f.get("mobile"), email:f.get("email"),
   province:f.get("province"), city:f.get("city"), vehicle_condition:f.get("vehicle_condition"),
   preferred_make:f.get("preferred_make"), preferred_model:f.get("preferred_model"),
-  purchase_timeframe:f.get("timeframe"), budget_max:f.get("budget_max") ? Number(f.get("budget_max")) : null,
-  monthly_payment_max:f.get("monthly_payment_max") ? Number(f.get("monthly_payment_max")) : null,
+  purchase_timeframe:f.get("timeframe"), budget_max:estimateMode.value==="price" && f.get("budget_max") ? Number(f.get("budget_max")) : null,
+  monthly_payment_max:estimateMode.value==="payment" && f.get("monthly_payment_max") ? Number(f.get("monthly_payment_max")) : null,
   deposit_max:f.get("deposit_max") ? Number(f.get("deposit_max")) : null,
   has_trade_in:f.get("has_trade_in")==="yes", trade_in_details:f.get("trade_in_details"),
   notes:f.get("notes"), website:f.get("website"),
@@ -75,7 +105,7 @@ form.addEventListener("submit", async (event) => {
   if(!response.ok) throw new Error(data.error || data.message || "We could not submit your enquiry. Please try again.");
   statusBox.className="status ok";
   statusBox.textContent="Thank you. Your enquiry has been received."+(data.reference ? " Reference: "+data.reference : "");
-  form.reset();
+  form.reset();estimateMode.value="price";updateEstimate();
  } catch(error) {
   statusBox.className="status error";
   statusBox.textContent=error.message || "Connection problem. Please try again.";
