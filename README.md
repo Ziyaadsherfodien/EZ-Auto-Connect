@@ -156,3 +156,17 @@ Customers must have opted in before WhatsApp notifications are sent. Keep the Wh
 - Insurance commissions are tracked in the separate **Insurance Commission** tab. Each record is linked to a lead and stores amount, insurer, policy reference, status, notes and paid date. Multiple policies can be recorded for one lead.
 - Dashboard revenue cards separately show vehicle finance commission forecast and insurance commission forecast / paid totals. These are actual recorded CRM amounts, not estimates of unsubmitted commissions.
 - Insurance commission migration: `supabase/migrations/20261121130000_add_insurance_commissions.sql`.
+
+
+## Registration, consent capture and operational exceptions (21 November 2026)
+
+- Customer registration now requires acceptance of the versioned Privacy Notice and Terms & Conditions and a single preferred service communication channel: WhatsApp or email.
+- The customer portal records the accepted document versions, acceptance timestamp, capture source and selected channel in the customer record and consent register. Channel preference is stored exclusively (one channel at a time); it is not treated as unrelated marketing consent.
+- Customers may change their preferred service communication channel in their verified profile. The backend updates the mutually exclusive WhatsApp/email notification flags.
+- New public website enquiries are matched to an existing customer by email, or by normalized mobile number plus name when no email is supplied, to reduce duplicate customer profiles. Each genuine enquiry still receives its own lead record.
+- Every new public enquiry automatically creates an initial-contact follow-up task due one hour after submission.
+- The administrator dashboard API now returns exception metrics for unverified customer profiles, overdue follow-ups, active leads without reminders and dealership allocations with no response after 24 hours. The CRM dashboard displays these exceptions.
+- Privacy Notice and Terms & Conditions pages are currently working drafts and require South African legal review before public launch.
+
+### Deployment note
+The latest customer and administrator HTML changes are committed to the GitHub main branch. The Supabase customer portal and administrator CRM Edge Functions have been deployed. The Cloudflare Worker frontend has not been redeployed from this work session; the live website will not show the committed HTML changes until the Worker is updated through an authorised Cloudflare deployment route.
