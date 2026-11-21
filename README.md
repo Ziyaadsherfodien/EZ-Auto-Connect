@@ -140,10 +140,11 @@ Customers must have opted in before WhatsApp notifications are sent. Keep the Wh
 
 
 ## Revenue dashboard calculations
-- Potential revenue = number of unique leads with pending finance proposals and no approved proposal or invoice, multiplied by the configured commission-per-completed-deal assumption.
-- Confirmed revenue = number of unique leads with an approved finance proposal and no linked invoice yet, multiplied by the configured commission assumption.
-- Invoiced revenue = sum of all invoice amounts recorded in the invoices table, regardless of payment status.
+- Every lead has its own `commission_amount` in ZAR, set by an administrator on the Leads screen. The amount can differ by customer, vehicle, dealership or negotiated agreement.
+- Potential revenue = sum of individual commission amounts for unique leads with pending finance proposals and no approved proposal or invoice.
+- Confirmed revenue = sum of individual commission amounts for unique leads with an approved finance proposal and no linked invoice yet.
+- Invoiced revenue = sum of actual invoice amounts, excluding draft, void and cancelled invoices.
 - Collected revenue = sum of invoice amounts whose status is `paid`.
-- Open invoices = sum of invoice amounts with `issued` or `overdue` status. The current invoice schema does not separately track partial payments.
-- Commission assumption is administrator-editable in the dashboard. It defaults to R0.00 until the business enters its agreed commission per completed vehicle deal. It is a forecast assumption only; invoiced and collected revenue use actual invoice records.
-- Approved / pending proposal status is read from finance proposal records. Multiple proposals for one lead count as one opportunity to avoid overstating pipeline revenue.
+- Open invoices = sum of invoice amounts with `issued` or `overdue` status.
+- Commission amounts default to R0.00 until entered for each lead. They are editable individually in the CRM Leads table. Invoiced and collected revenue use actual invoice records, not commission estimates.
+- Multiple proposals for one lead count as one pipeline opportunity to avoid overstating revenue.
