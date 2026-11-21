@@ -14,6 +14,7 @@ Independent, customer-first vehicle enquiry and finance proposal comparison plat
 - Administrator CRM API: `admin-crm`
 - Dealership portal API: `dealer-portal`
 - Customer portal and ID submission API: `customer-portal`
+- Credit bureau consent and Experian integration API: `credit-bureau`
 
 ## Customer identity verification
 1. Customer creates an account and verifies their email address.
@@ -126,3 +127,13 @@ Customers must have opted in before WhatsApp notifications are sent. Keep the Wh
 - Customer notification preference controls: committed in `customer.html`; customer API supports saving consent.
 - External sending is **not active until Meta templates are approved and the provider secrets above are configured**.
 - Cloudflare Worker frontend deployment and authenticated end-to-end delivery tests still need to be completed after provider setup.
+
+
+## Experian credit bureau consent framework
+- The verified customer portal displays a separate, unticked Experian authorisation checkbox.
+- Consent is recorded with the exact wording, version, timestamp, customer and audit event.
+- Customers can view authorisation status and withdraw consent for future enquiries.
+- The administrator CRM includes a Credit Bureau register for consent and enquiry status.
+- Data is stored in the private `app.credit_bureau_requests` table; access is through the authenticated Edge Function using the service role only.
+- Current state: consent capture is implemented. No credit enquiry is sent to Experian yet. Live bureau requests remain disabled until Experian approves EZ Auto Connect's business use case, supplies API documentation and sandbox access, and credentials are configured as Supabase Edge Function secrets.
+- Do not collect or submit a South African ID number for bureau lookup until Experian confirms the permitted purpose, required customer identity fields and secure API flow. Customer consent is necessary but is not, by itself, proof of legal eligibility or a permissible purpose.
