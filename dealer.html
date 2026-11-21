@@ -1,7 +1,57 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EZ Auto Connect | Dealership Portal</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
 :root{--bg:#191b1c;--panel:#242728;--line:#3a4142;--text:#f2f3f3;--muted:#a0a5a6;--orange:#f4510b;--red:#ff6969;--green:#75d995;--amber:#ffc36b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}.wrap{width:min(1100px,94%);margin:30px auto}.brand{font-weight:900;letter-spacing:1.5px;margin-bottom:24px}.brand span{color:var(--orange)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin:15px 0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:flex;flex-direction:column;gap:6px;margin:9px 0}label{font-size:13px;font-weight:bold;color:#d9dddd}input,select{background:#151819;border:1px solid var(--line);border-radius:7px;padding:12px;color:white;font:inherit;width:100%}.btn{background:var(--orange);border:0;color:white;padding:12px 17px;border-radius:7px;font-weight:bold;cursor:pointer}.secondary{background:#3b4142}.hidden{display:none!important}.muted{color:var(--muted)}.status{margin-top:12px}.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.row .grow{flex:1}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:11px;border-top:1px solid var(--line);vertical-align:top}.table th{font-size:12px;color:#bdc3c3}.scroll{overflow:auto}.pill{display:inline-block;border-radius:20px;padding:5px 10px;background:#3b3329;text-transform:capitalize}.red{color:var(--red)}.green{color:var(--green)}.amber{color:var(--amber)}.note{background:#30251f;border-left:4px solid var(--orange);padding:12px;border-radius:5px}.metric{font-size:14px}.metric b{font-size:22px;display:block;margin-top:5px}@media(max-width:650px){.grid{grid-template-columns:1fr}.panel{padding:16px}.wrap{margin:18px auto}}
 </style></head><body><main class="wrap"><div class="brand">EZ <span>AUTO CONNECT</span> <small class="muted">DEALERSHIP PORTAL</small></div>
-<section id="auth" class="panel"><h1>Dealership sign in</h1><p class="muted">Use the dealership login issued by EZ Auto Connect.</p><form id="login" style="max-width:420px"><div class="field"><label>Email</label><input name="email" type="email" required></div><div class="field"><label>Password</label><input name="password" type="password" required></div><button class="btn">Sign in</button></form><div id="authMsg" class="status"></div></section>
+<section id="auth" class="panel"><h1>Dealership sign in</h1><p class="muted">Use the dealership login issued by EZ Auto Connect.</p><form id="login" style="max-width:420px"><div class="field"><label>Email</label><input name="email" type="email" required></div><div class="field"><label>Password</label><input name="password" type="password" required></div><button class="btn">Sign in</button></form><div id="authMsg" class="status"></div><div class="row" style="margin-top:14px"><span class="muted">New dealership?</span><button type="button" id="showRegister" class="btn secondary">Register dealership</button></div></section>
+<section id="register" class="panel hidden">
+  <div class="row"><div class="grow"><h1>Register your dealership</h1><p class="muted">Complete your company, tax and accounts details once. EZ Auto Connect will use these details for dealership onboarding and invoices.</p></div><button type="button" id="backToLogin" class="btn secondary">Back to sign in</button></div>
+  <form id="dealerRegistration">
+    <h2>1. Company legal details</h2><div class="grid">
+      <div class="field"><label>Registered legal company name *</label><input name="legal_name" required maxlength="180" placeholder="As shown on CIPC documents"></div>
+      <div class="field"><label>Trading name *</label><input name="trading_name" required maxlength="180"></div>
+      <div class="field"><label>Legal entity type *</label><select name="entity_type" required><option value="">Select</option><option>Private company (Pty) Ltd</option><option>Public company Ltd</option><option>Close corporation (CC)</option><option>Sole proprietor</option><option>Partnership</option><option>Other</option></select></div>
+      <div class="field"><label>CIPC / company registration number *</label><input name="registration_number" required maxlength="80"></div>
+      <div class="field"><label>VAT registration status *</label><select name="tax_status" id="taxStatus" required><option value="">Select</option><option>VAT registered</option><option>Not VAT registered</option></select></div>
+      <div class="field"><label>VAT number <span class="muted">(required if VAT registered)</span></label><input name="vat_number" id="vatNumber" inputmode="numeric" maxlength="10" placeholder="10 digits, e.g. 4XXXXXXXXX"></div>
+      <div class="field"><label>Company telephone *</label><input name="company_phone" required type="tel"></div>
+      <div class="field"><label>General company email *</label><input name="company_email" required type="email"></div>
+      <div class="field"><label>Company website</label><input name="dealer_website" type="url" placeholder="https://"></div>
+      <div class="field"><label>Dealership branch / location name</label><input name="dealer_branch_name"></div>
+    </div>
+    <h2>2. Registered / physical business address</h2><div class="grid">
+      <div class="field"><label>Street address *</label><input name="company_address" required></div>
+      <div class="field"><label>City / town *</label><input name="company_city" required></div>
+      <div class="field"><label>Province *</label><select name="company_province" required><option value="">Select province</option><option>Eastern Cape</option><option>Free State</option><option>Gauteng</option><option>KwaZulu-Natal</option><option>Limpopo</option><option>Mpumalanga</option><option>North West</option><option>Northern Cape</option><option>Western Cape</option></select></div>
+      <div class="field"><label>Postal code *</label><input name="company_postal_code" required maxlength="12"></div>
+    </div>
+    <h2>3. Authorised dealership representative and portal login</h2><div class="grid">
+      <div class="field"><label>Full name *</label><input name="contact_name" required></div>
+      <div class="field"><label>Position / job title</label><input name="representative_title" placeholder="Dealer principal, F&I manager, etc."></div>
+      <div class="field"><label>Business email / login email *</label><input name="contact_email" required type="email"></div>
+      <div class="field"><label>Direct contact number *</label><input name="contact_phone" required type="tel"></div>
+    </div>
+    <h2>4. Invoice and billing details</h2><p class="muted">Invoices will be addressed to the dealership/company, not to the vehicle customer.</p><div class="grid">
+      <div class="field"><label>Accounts payable contact name</label><input name="accounts_contact_name"></div>
+      <div class="field"><label>Accounts payable email *</label><input name="accounts_email" required type="email"></div>
+      <div class="field"><label>Accounts payable phone</label><input name="accounts_phone" type="tel"></div>
+      <div class="field"><label>Billing contact name *</label><input name="billing_contact_name" required></div>
+      <div class="field"><label>Billing email *</label><input name="billing_email" required type="email"></div>
+      <div class="field"><label>Billing phone</label><input name="billing_phone" type="tel"></div>
+      <div class="field"><label>Billing street address *</label><input name="billing_address" required></div>
+      <div class="field"><label>Billing city / town *</label><input name="billing_city" required></div>
+      <div class="field"><label>Billing province *</label><select name="billing_province" required><option value="">Select province</option><option>Eastern Cape</option><option>Free State</option><option>Gauteng</option><option>KwaZulu-Natal</option><option>Limpopo</option><option>Mpumalanga</option><option>North West</option><option>Northern Cape</option><option>Western Cape</option></select></div>
+      <div class="field"><label>Billing postal code *</label><input name="billing_postal_code" required maxlength="12"></div>
+      <div class="field"><label>Purchase order required?</label><select name="purchase_order_required"><option value="false">No</option><option value="true">Yes</option></select></div>
+      <div class="field"><label>Purchase order contact</label><input name="purchase_order_contact"></div>
+      <div class="field"><label>Invoice delivery / account notes</label><input name="invoice_notes" maxlength="1000" placeholder="PO instructions, invoice references, etc."></div>
+    </div>
+    <div class="field" style="max-width:320px"><label>Create portal password * (minimum 12 characters)</label><input name="password" type="password" minlength="12" required autocomplete="new-password"></div>
+    <input name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px" aria-hidden="true">
+    <label style="display:flex;gap:9px;align-items:flex-start;margin:16px 0"><input type="checkbox" name="declaration" required style="width:auto;margin-top:3px"><span>I confirm that I am authorised to register this dealership and that the company, VAT, contact and billing information supplied is accurate. I understand the account remains pending until EZ Auto Connect verifies and approves the dealership.</span></label>
+    <button class="btn" type="submit">Submit dealership registration</button><div id="registerMsg" class="status"></div>
+  </form>
+</section>
+<section id="passwordSetup" class="panel hidden"><h2>Finish setting up your dealer login</h2><p class="muted">Choose a password for your dealership portal account.</p><form id="finishPassword" style="max-width:420px"><div class="field"><label>New password (minimum 12 characters)</label><input name="password" type="password" minlength="12" required autocomplete="new-password"></div><button class="btn">Set password</button></form><div id="passwordMsg" class="status"></div></section>
+
 <section id="app" class="hidden"><div class="panel row"><div><h1 style="margin:0">Dealership workspace</h1><p id="dealerName" class="muted"></p></div><div class="grow"></div><div class="metric">SA prime benchmark<b id="prime">Loading…</b><small id="primeDate" class="muted"></small></div><button id="logout" class="btn secondary">Sign out</button></div>
 <div class="panel"><div class="row"><h2 style="margin:0">Allocated customer enquiries</h2><div class="grow"></div><button id="refresh" class="btn secondary">Refresh</button></div><p class="muted">Only enquiries allocated to your dealership appear here. Finance proposals can only be submitted for customers whose ID has been approved by EZ administration.</p><div class="scroll"><table class="table"><thead><tr><th>Customer / Ref</th><th>Vehicle request</th><th>Budget / Instalment</th><th>ID verification</th><th>Action</th></tr></thead><tbody id="allocations"></tbody></table></div></div>
 <div id="proposalPanel" class="panel hidden"><h2>Submit finance proposal</h2><p id="selectedLead" class="muted"></p><div class="note">Enter the exact figures shown on the vehicle selling price and finance house quotation. <b>Estimated figures are not accepted.</b> EZ calculates its own prime-rate benchmark for comparison. Figures that do not reconcile are automatically marked <b class="red">RED – CHECK QUOTATION</b>.</div>
