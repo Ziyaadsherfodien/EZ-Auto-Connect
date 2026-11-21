@@ -148,3 +148,11 @@ Customers must have opted in before WhatsApp notifications are sent. Keep the Wh
 - Open invoices = sum of invoice amounts with `issued` or `overdue` status.
 - Commission amounts default to R0.00 until entered for each lead. They are editable individually in the CRM Leads table. Invoiced and collected revenue use actual invoice records, not commission estimates.
 - Multiple proposals for one lead count as one pipeline opportunity to avoid overstating revenue.
+
+
+## CRM lead profiles, WhatsApp sharing and insurance commissions
+- The Leads table is intentionally kept concise. Administrators open a lead to edit customer contact details, vehicle preferences, budget, instalment range, deposit, trade-in details, status, notes and per-lead vehicle finance commission.
+- Dealership allocation and WhatsApp sharing are available inside the lead profile. WhatsApp sharing creates a pre-filled click-to-chat message for the selected dealership contact; the administrator reviews and sends it in WhatsApp. The backend requires active dealership-sharing consent before creating the message.
+- Insurance commissions are tracked in the separate **Insurance Commission** tab. Each record is linked to a lead and stores amount, insurer, policy reference, status, notes and paid date. Multiple policies can be recorded for one lead.
+- Dashboard revenue cards separately show vehicle finance commission forecast and insurance commission forecast / paid totals. These are actual recorded CRM amounts, not estimates of unsubmitted commissions.
+- Insurance commission migration: `supabase/migrations/20261121130000_add_insurance_commissions.sql`.
