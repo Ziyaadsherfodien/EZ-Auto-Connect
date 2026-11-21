@@ -94,4 +94,14 @@ async function loadProposals(){const d=await call("list_proposals");$("proposals
 $("refresh").onclick=load;$("login").onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{const {error}=await sb.auth.signInWithPassword({email:f.get("email"),password:f.get("password")});if(error)throw error;await render()}catch(x){say("authMsg",x.message,"error")}};
 async function render(){const {data:{session}}=await sb.auth.getSession();$("auth").classList.toggle("hidden",!!session);$("app").classList.toggle("hidden",!session);if(session)await load()}
 $("logout").onclick=async()=>{await sb.auth.signOut();await render()};sb.auth.onAuthStateChange(()=>setTimeout(render,0));render();
+async function render(){
+ const {data:{session}}=await sb.auth.getSession();
+ if(!session){$("passwordSetup").classList.add("hidden");$("app").classList.add("hidden");$("auth").classList.remove("hidden");return;}
+ $("auth").classList.add("hidden");$("register").classList.add("hidden");
+ $("app").classList.remove("hidden");await load();
+ const message=$("appMsg").textContent;
+ if(message.includes("Portal access is not enabled")||message.includes("Dealership is not active")){
+   $("app").classList.add("hidden");$("passwordSetup").classList.remove("hidden");
+ }
+}
 </script></body></html>
