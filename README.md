@@ -144,6 +144,6 @@ Customers must have opted in before WhatsApp notifications are sent. Keep the Wh
 - Confirmed revenue = number of unique leads with an approved finance proposal and no linked invoice yet, multiplied by the configured commission assumption.
 - Invoiced revenue = sum of all invoice amounts recorded in the invoices table, regardless of payment status.
 - Collected revenue = sum of invoice amounts whose status is `paid`.
-- Open invoices = sum of issued, overdue and part-paid invoice amounts; the current invoice schema does not include a separate amount-paid field, so part-paid amounts are currently treated as the full recorded invoice amount until that schema is enhanced.
+- Open invoices = sum of invoice amounts with `issued` or `overdue` status. The current invoice schema does not separately track partial payments.
 - Commission assumption is administrator-editable in the dashboard. It defaults to R0.00 until the business enters its agreed commission per completed vehicle deal. It is a forecast assumption only; invoiced and collected revenue use actual invoice records.
 - Approved / pending proposal status is read from finance proposal records. Multiple proposals for one lead count as one opportunity to avoid overstating pipeline revenue.
