@@ -173,3 +173,8 @@ The latest customer and administrator HTML changes are committed to the GitHub m
 
 - Customer offer comparison now displays dealership, finance house, vehicle description, cash price, deposit, monthly instalment, prime benchmark, quoted interest rate, term, balloon, total repayment and affordability assessment. Offers are ranked by lowest total repayment.
 - Website enquiries are automatically allocated as shared leads only to active dealerships whose configured province/city, make and vehicle-category coverage match, that accept shared leads and have capacity. This allocation occurs only after the public enquiry form's dealership-sharing consent is supplied. Leads with no matching partner remain unallocated for administrator review.
+
+### Final launch controls
+- The intended preview/launch hostname for this phase is the Cloudflare Worker URL `https://ez-auto-connect.ezautoconnect.workers.dev/` only. Do not bind or publish the production custom domain as part of this deployment.
+- Supabase security advisor reports leaked-password protection is disabled. Enable it in Supabase Dashboard → Authentication → Settings → Password Security if the project plan supports it (Supabase documents this as Pro plan and above). This is a dashboard-level control not available through the current connected project tools.
+- The `app` schema is not granted USAGE to `anon` or `authenticated`; RLS-without-policies findings on its tables therefore intentionally deny direct client access. Edge Functions use the privileged server-side role. Do not add blanket RLS policies to these private tables.
