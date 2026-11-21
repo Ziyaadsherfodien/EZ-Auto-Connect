@@ -170,3 +170,6 @@ Customers must have opted in before WhatsApp notifications are sent. Keep the Wh
 
 ### Deployment note
 The latest customer and administrator HTML changes are committed to the GitHub main branch. The Supabase customer portal and administrator CRM Edge Functions have been deployed. The Cloudflare Worker frontend has not been redeployed from this work session; the live website will not show the committed HTML changes until the Worker is updated through an authorised Cloudflare deployment route.
+
+- Customer offer comparison now displays dealership, finance house, vehicle description, cash price, deposit, monthly instalment, prime benchmark, quoted interest rate, term, balloon, total repayment and affordability assessment. Offers are ranked by lowest total repayment.
+- Website enquiries are automatically allocated as shared leads only to active dealerships whose configured province/city, make and vehicle-category coverage match, that accept shared leads and have capacity. This allocation occurs only after the public enquiry form's dealership-sharing consent is supplied. Leads with no matching partner remain unallocated for administrator review.
