@@ -236,7 +236,7 @@ function messengerCsv(text){
   if(rows.length<2)return [];
   const heads=rows.shift().map(x=>x.trim().toLowerCase().replace(/^"|"$/g,""));
   const nameIndex=heads.findIndex(x=>["name","full_name","contact name","display name","given name"].includes(x));
-  const phoneIndexes=heads.map((h,i)=>({h,i})).filter(x=>/(^|\\b)(phone|mobile|telephone|tel|whatsapp)(\\b|$)/i.test(x.h)&&/(value|number)?$/i.test(x.h)).map(x=>x.i);
+  const phoneIndexes=heads.map((h,i)=>({h,i})).filter(x=>/\b(phone|mobile|telephone|tel|whatsapp)\b/i.test(x.h)&&/(value|number)?$/i.test(x.h)).map(x=>x.i);
   if(!phoneIndexes.length)throw Error("No phone column found. Use a CSV with a Phone, Mobile, Telephone or WhatsApp column. Google Contacts exports with Phone 1 - Value are supported.");
   const out=[];
   for(const row of rows){
