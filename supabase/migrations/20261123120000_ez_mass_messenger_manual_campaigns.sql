@@ -43,3 +43,7 @@ alter table app.messenger_campaign_recipients enable row level security;
 comment on table app.messenger_contacts is 'EZ Mass Messenger address-book imports. Consent defaults to unknown; unknown/opted-out contacts are excluded from campaign queues.';
 comment on table app.messenger_campaigns is 'EZ Mass Messenger manual WhatsApp campaigns. No messages are sent by the backend.';
 comment on table app.messenger_campaign_recipients is 'Manual WhatsApp click-to-chat queue. Opening a chat never marks a message as sent.';
+
+create index if not exists messenger_contacts_imported_by_idx on app.messenger_contacts (imported_by);
+create index if not exists messenger_campaigns_created_by_idx on app.messenger_campaigns (created_by);
+create index if not exists messenger_recipients_contact_idx on app.messenger_campaign_recipients (contact_id);
