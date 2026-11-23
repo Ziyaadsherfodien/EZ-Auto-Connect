@@ -209,10 +209,78 @@ async function loadGoogleContactsStatus(){try{const d=await googleContactsApi("s
 async function connectGoogleContacts(){const b=$("googleContactsConnect");b.disabled=true;try{const d=await googleContactsApi("start");if(!d.authorization_url)throw Error("Google authorisation URL was not returned.");window.location.href=d.authorization_url;}catch(e){$("googleContactsMsg").textContent=e.message;b.disabled=false}}
 async function syncGoogleContacts(){const b=$("googleContactsSync");b.disabled=true;$("googleContactsMsg").textContent="Syncing Google Contacts…";try{const d=await googleContactsApi("sync");$("googleContactsMsg").textContent=d.imported+" contacts imported or updated. Existing permission statuses were preserved."+(d.completed?"":" Sync reached the page safety limit; press Sync now again to continue.");await loadMessenger();await loadGoogleContactsStatus();}catch(e){$("googleContactsMsg").textContent=e.message}finally{b.disabled=false}}
 async function messengerApi(action,extra={}){const {data:{session}}=await client.auth.getSession();if(!session)throw Error("Please sign in again.");const r=await fetch(MESSENGER_API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_KEY},body:JSON.stringify({action,...extra})});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Messenger request failed");return d}
-function messengerPhone(raw){let p=String(raw||"").replace(/[^0-9+]/g,"").replace(/^\\+/,"");if(p.startsWith("0"))p="27"+p.slice(1);return p}
-function messengerCsv(text){const rows=[];let row=[],cell="",quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'&&quoted&&text[i+1]==='"'){cell+='"';i++;}else if(c==='"')quoted=!quoted;else if(c===","&&!quoted){row.push(cell);cell="";}else if((c==="\\n"||c==="\\r")&&!quoted){if(c==="\\r"&&text[i+1]==="\\n")i++;row.push(cell);if(row.some(x=>x.trim()))rows.push(row);row=[];cell="";}else cell+=c;}row.push(cell);if(row.some(x=>x.trim()))rows.push(row);if(rows.length<2)return [];const heads=rows.shift().map(x=>x.trim().toLowerCase());const ni=heads.findIndex(x=>["name","full_name","contact name","display name"].includes(x)),pi=heads.findIndex(x=>["phone","mobile","number","telephone","whatsapp"].includes(x));if(pi<0)throw Error("CSV must contain a phone, mobile or number column.");return rows.map(r=>({full_name:ni>=0?(r[ni]||"").trim():"",phone:messengerPhone(r[pi])})).filter(x=>x.phone)}
-function messengerVcf(text){const cards=text.split(/BEGIN:VCARD/i).slice(1),out=[];for(const card of cards){const name=(card.match(/^FN[^:]*:(.*)$/mi)||card.match(/^N[^:]*:(.*)$/mi)||[])[1]||"";const phones=[...card.matchAll(/^TEL[^:]*:(.*)$/gmi)];for(const p of phones){const phone=messengerPhone(p[1]);if(phone)out.push({full_name:name.trim(),phone});}}return out}
-async function importMessengerFile(){const file=$("messengerImportFile").files[0];if(!file)return message("messengerImportMsg","Choose a .VCF or .CSV file first.","error");const btn=$("messengerImportBtn");btn.disabled=true;try{const raw=await file.text(),parsedContacts=/\\.vcf$|\\.vcard$/i.test(file.name)?messengerVcf(raw):messengerCsv(raw),contacts=[...new Map(parsedContacts.map(c=>[c.phone,c])).values()];if(!contacts.length)throw Error("No valid contacts were found in this file.");let imported=0,rejected=0;for(let i=0;i<contacts.length;i+=250){const r=await messengerApi("import_contacts",{contacts:contacts.slice(i,i+250)});imported+=Number(r.imported||0);rejected+=Number(r.rejected||0);}message("messengerImportMsg",imported+" contacts imported or updated; "+rejected+" invalid entries skipped. All new contacts remain Unknown consent.","ok");$("messengerImportFile").value="";await loadMessenger();}catch(e){message("messengerImportMsg",e.message,"error")}finally{btn.disabled=false}}
+function messengerPhone(raw){
+  let p=String(raw??"").trim().replace(/(?:ext\.?|x)\s*\d+$/i,"").replace(/[^\d+]/g,"").replace(/^\+/,"");
+  if(p.startsWith("00"))p=p.slice(2);
+  if(p.startsWith("0"))p="27"+p.slice(1);
+  return p.length>=10&&p.length<=15?p:"";
+}
+function messengerParseDelimited(text,delimiter){
+  const rows=[];let row=[],cell="",quoted=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(c==='"'&&quoted&&text[i+1]==='"'){cell+='"';i++;}
+    else if(c==='"')quoted=!quoted;
+    else if(c===delimiter&&!quoted){row.push(cell);cell="";}
+    else if((c==="\n"||c==="\r")&&!quoted){if(c==="\r"&&text[i+1]==="\n")i++;row.push(cell);if(row.some(x=>x.trim()))rows.push(row);row=[];cell="";}
+    else cell+=c;
+  }
+  row.push(cell);if(row.some(x=>x.trim()))rows.push(row);return rows;
+}
+function messengerCsv(text){
+  text=String(text||"").replace(/^\uFEFF/,"");
+  const firstLine=text.split(/\r?\n/).find(x=>x.trim())||"";
+  const candidates=[",",";","\t"];
+  const delimiter=candidates.sort((a,b)=>firstLine.split(b).length-firstLine.split(a).length)[0];
+  const rows=messengerParseDelimited(text,delimiter);
+  if(rows.length<2)return [];
+  const heads=rows.shift().map(x=>x.trim().toLowerCase().replace(/^"|"$/g,""));
+  const nameIndex=heads.findIndex(x=>["name","full_name","contact name","display name","given name"].includes(x));
+  const phoneIndexes=heads.map((h,i)=>({h,i})).filter(x=>/(^|\\b)(phone|mobile|telephone|tel|whatsapp)(\\b|$)/i.test(x.h)&&/(value|number)?$/i.test(x.h)).map(x=>x.i);
+  if(!phoneIndexes.length)throw Error("No phone column found. Use a CSV with a Phone, Mobile, Telephone or WhatsApp column. Google Contacts exports with Phone 1 - Value are supported.");
+  const out=[];
+  for(const row of rows){
+    const name=nameIndex>=0?String(row[nameIndex]||"").trim():"";
+    for(const index of phoneIndexes){const phone=messengerPhone(row[index]);if(phone)out.push({full_name:name,phone});}
+  }
+  return out;
+}
+function messengerVcf(text){
+  const unfolded=String(text||"").replace(/^\uFEFF/,"").replace(/\r\n[ \t]/g,"").replace(/\n[ \t]/g,"");
+  const cards=unfolded.split(/BEGIN:VCARD/i).slice(1),out=[];
+  for(const card of cards){
+    const lines=card.split(/\r?\n/);
+    const getValue=prefix=>{const line=lines.find(x=>new RegExp("^"+prefix+"(?:;[^:]*)?:","i").test(x));return line?line.slice(line.indexOf(":")+1).trim():"";};
+    let name=getValue("FN")||getValue("N").replace(/\\;/g," ").replace(/;/g," ").trim();
+    name=name.replace(/\\,/g,",").replace(/\\;/g,";").replace(/\\\\/g,"\\");
+    for(const line of lines){
+      if(!/^TEL(?:;[^:]*)?:/i.test(line))continue;
+      const phone=messengerPhone(line.slice(line.indexOf(":")+1));
+      if(phone)out.push({full_name:name,phone});
+    }
+  }
+  return out;
+}
+async function importMessengerFile(){
+  const file=$("messengerImportFile").files[0];
+  if(!file)return message("messengerImportMsg","Choose a .VCF or .CSV file first.","error");
+  const btn=$("messengerImportBtn");btn.disabled=true;
+  try{
+    const raw=await file.text();
+    const isVcf=/\.(vcf|vcard)$/i.test(file.name)||/BEGIN:VCARD/i.test(raw.slice(0,2000));
+    const parsedContacts=isVcf?messengerVcf(raw):messengerCsv(raw);
+    const contacts=[...new Map(parsedContacts.map(c=>[c.phone,c])).values()];
+    if(!contacts.length)throw Error("No usable phone numbers were found. Check that the file contains phone numbers, or export contacts as CSV/VCF.");
+    let imported=0,rejected=0;
+    for(let i=0;i<contacts.length;i+=250){
+      const r=await messengerApi("import_contacts",{contacts:contacts.slice(i,i+250)});
+      imported+=Number(r.imported||0);rejected+=Number(r.rejected||0);
+    }
+    message("messengerImportMsg",imported+" contacts imported or updated; "+rejected+" invalid entries skipped. New contacts remain Unknown consent.","ok");
+    $("messengerImportFile").value="";await loadMessenger();
+  }catch(e){message("messengerImportMsg",e.message,"error")}
+  finally{btn.disabled=false}
+}
 async function loadMessenger(){try{const [c,p]=await Promise.all([messengerApi("list_contacts",{query:$("messengerContactSearch")?.value||"",consent:$("messengerConsentFilter")?.value||""}),messengerApi("list_campaigns")]);messengerContacts=c.contacts||[];messengerCampaigns=p.campaigns||[];renderMessengerContacts();renderMessengerCampaigns();const total=messengerContacts.length,eligible=messengerContacts.filter(x=>x.consent_status==="opted_in").length;const pending=messengerCampaigns.reduce((n,x)=>n+x.pending,0);$("messengerMetrics").innerHTML=[["Imported contacts",c.total||total],["Permission confirmed",eligible],["Campaigns",messengerCampaigns.length],["Awaiting manual send",pending]].map(x=>'<div class="panel metric"><span class="label">'+x[0]+'</span><strong>'+x[1]+'</strong></div>').join("");loadGoogleContactsStatus();}catch(e){$("messengerContactRows").innerHTML='<tr><td colspan="6" class="empty">'+esc(e.message)+'</td></tr>'}}
 function renderMessengerContacts(){const rows=messengerContacts;$("messengerContactRows").innerHTML=rows.map(c=>'<tr><td><input type="checkbox" data-messenger-select="'+esc(c.id)+'" '+(messengerSelected.has(c.id)?"checked":"")+'></td><td><b>'+esc(c.full_name||"Unnamed contact")+'</b></td><td>'+esc(c.phone_e164)+'</td><td>'+esc(c.email_address||"—")+'</td><td><span class="pill '+(c.consent_status==="opted_in"?"sold":c.consent_status==="opted_out"?"hot":"warm")+'">'+esc(c.consent_status.replace("_"," "))+'</span></td><td>'+date(c.last_contacted_at)+'</td></tr>').join("")||'<tr><td colspan="6" class="empty">No imported contacts. Import a .VCF or .CSV file above.</td></tr>';$("messengerSelectedCount").textContent=messengerSelected.size+" selected"}
 function renderMessengerCampaigns(){$("messengerCampaignRows").innerHTML=messengerCampaigns.map(c=>'<tr><td><b>'+esc(c.name)+'</b><br><span class="muted small">'+esc(c.status)+'</span></td><td>'+date(c.created_at)+'</td><td>'+c.total+'</td><td>'+c.pending+'</td><td>'+c.opened+'</td><td>'+c.sent+'</td><td>'+c.skipped+'</td><td><button class="btn primary" data-messenger-campaign="'+esc(c.id)+'" data-messenger-name="'+esc(c.name)+'">Open queue</button></td></tr>').join("")||'<tr><td colspan="8" class="empty">No campaigns created yet.</td></tr>'}
