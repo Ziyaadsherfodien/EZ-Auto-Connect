@@ -1,0 +1,42 @@
+name: Deploy EZ Auto Connect to Cloudflare
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "index.html"
+      - "customer.html"
+      - "dealer.html"
+      - "admin.html"
+      - "privacy.html"
+      - "terms.html"
+      - "wrangler.jsonc"
+      - ".github/workflows/deploy-cloudflare.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Prepare approved portal assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp index.html customer.html dealer.html admin.html privacy.html terms.html dist/
+          test "$(find dist -maxdepth 1 -type f | wc -l)" -eq 6
+
+      - name: Deploy existing Worker
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.jsonc
