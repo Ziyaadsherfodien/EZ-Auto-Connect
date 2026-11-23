@@ -178,3 +178,13 @@ The latest customer and administrator HTML changes are committed to the GitHub m
 - The intended preview/launch hostname for this phase is the Cloudflare Worker URL `https://ez-auto-connect.ezautoconnect.workers.dev/` only. Do not bind or publish the production custom domain as part of this deployment.
 - Supabase security advisor reports leaked-password protection is disabled. Enable it in Supabase Dashboard → Authentication → Settings → Password Security if the project plan supports it (Supabase documents this as Pro plan and above). This is a dashboard-level control not available through the current connected project tools.
 - The `app` schema is not granted USAGE to `anon` or `authenticated`; RLS-without-policies findings on its tables therefore intentionally deny direct client access. Edge Functions use the privileged server-side role. Do not add blanket RLS policies to these private tables.
+
+## EZ Mass Messenger (manual WhatsApp campaigns)
+
+- Administrator-only workspace in `admin.html`; imports WhatsApp Business address-book exports in vCard (.vcf) or CSV format.
+- Contacts are stored separately from customer CRM records. New imports default to `unknown` marketing permission and are excluded from campaigns.
+- Campaign recipients are created only for contacts explicitly marked `opted_in` with recorded permission evidence. Opt-outs are excluded.
+- Every recipient opens a single private WhatsApp click-to-chat conversation with a prefilled, optionally personalised message. An administrator must review and press Send in WhatsApp.
+- The system does not use Meta WhatsApp API, Broadcast Lists, browser automation or automated sending. Opening a chat is recorded separately from a manually confirmed send.
+- Supabase Edge Function: `ez-mass-messenger` (JWT required; validates active administrator profile). Tables are private in the `app` schema with RLS enabled; access is server-side only.
+- Import phone contacts from the device Contacts app as VCF/CSV; WhatsApp Business does not expose its entire address book to an ordinary website.
