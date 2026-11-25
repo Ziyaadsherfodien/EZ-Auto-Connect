@@ -12,8 +12,11 @@
 ## Frontend
 - `growth-agent.html` committed to the GitHub main branch.
 - Intended route: `https://ez-auto-connect.ezautoconnect.workers.dev/growth-agent.html`.
-- Existing Worker is asset-only. The current Cloudflare integration can inspect the Worker but no safe GitHub-to-Worker deployment pipeline or asset-upload path was available in this implementation. Therefore the new HTML is committed but is **not confirmed live** until the existing Worker assets are redeployed.
+- Existing Worker is asset-only and no Workers Builds configuration is currently attached. Cloudflare can read the GitHub repository and autofill its Wrangler settings, but the connected Cloudflare OAuth session lacks the API-token permission needed to create a Workers Builds token/configuration. Therefore the new HTML is committed but is **not confirmed live** until the existing Worker assets are redeployed. Do not replace the current Worker script manually; preserve its existing asset service.
 - Existing CRM, customer records, dealer records and the existing Worker have not been overwritten.
+
+## Remaining frontend deployment step
+In Cloudflare Dashboard, open Workers & Pages → `ez-auto-connect` → Settings/Builds and connect GitHub repository `Ziyaadsherfodien/EZ-Auto-Connect`, production branch `main`, root directory `/`. Use build command `mkdir -p dist && cp *.html dist/` and deploy command `npx wrangler deploy`; the existing `wrangler.jsonc` serves `./dist` as static assets. Confirm the connected GitHub app and build token permissions, deploy, then verify `/growth-agent.html` alongside the existing public, customer, dealer and admin pages. Do not change the Worker name, hostname or DNS.
 
 ## Security and operational controls
 - Admin JWT plus active `app.user_profiles.role='admin'` required for dashboard/run/review API calls.
