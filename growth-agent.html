@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#15191d"><title>EZ Auto Connect | AI Growth Agent</title>
+<style>
+:root{--bg:#f3f5f7;--panel:#fff;--ink:#20262d;--muted:#78838e;--line:#e6eaee;--orange:#e65b2f;--green:#16834a;--red:#c83d43;--amber:#a66a08;--navy:#171c22}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}.login-card{width:min(420px,100%);background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px;box-shadow:0 15px 45px #1d2a3810}
+.logo{font-weight:850;letter-spacing:.04em;font-size:20px}.mark{display:inline-grid;place-items:center;width:35px;height:35px;border-radius:10px;background:linear-gradient(145deg,#f1784e,#d94c25);color:#fff;margin-right:9px}
+.login h1{font-size:24px;margin:28px 0 5px}.sub{color:var(--muted);line-height:1.5}
+.field{display:grid;gap:7px;margin:16px 0}.field label{font-size:12px;font-weight:700}.field input{padding:12px;border:1px solid var(--line);border-radius:9px;background:#fafbfc;color:var(--ink)}
+.btn{border:1px solid #dfe4e9;background:#fff;color:#3c4650;border-radius:9px;padding:10px 14px;font-weight:700}.btn.primary{background:linear-gradient(135deg,#ed7048,#d94c25);border-color:#df5a32;color:white;box-shadow:0 5px 14px #e65b2f26}.btn:disabled{opacity:.55;cursor:not-allowed}
+.login .btn{width:100%;margin-top:8px}.msg{font-size:12px;color:var(--muted);margin-top:10px}.msg.error{color:var(--red)}
+.shell{min-height:100vh;display:grid;grid-template-columns:245px 1fr}.side{background:linear-gradient(180deg,#171b20,#20262c);color:#fff;padding:25px 16px;display:flex;flex-direction:column}.brand{font-weight:850;font-size:18px;padding:5px 10px 28px}.brand small{display:block;color:#89939d;font-size:9px;letter-spacing:2px;margin:6px 0 0 45px}
+.navlabel{font-size:9px;color:#7f8994;letter-spacing:1.8px;font-weight:800;padding:12px}.nav button{display:block;width:100%;text-align:left;border:0;background:transparent;color:#b9c1c9;border-radius:9px;padding:12px;margin:3px 0}.nav button.active,.nav button:hover{background:#e65b2f20;color:#ff9777}
+.sidefoot{margin-top:auto;color:#8b96a0;font-size:11px;line-height:1.6;padding:12px}
+main{min-width:0}.top{height:74px;background:#ffffffed;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:12px;position:sticky;top:0;z-index:3}.top h1{font-size:18px;margin:0}.spacer{flex:1}.user{font-size:12px;color:var(--muted)}
+.content{max-width:1500px;margin:auto;padding:26px 28px 50px}.heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:18px}.heading h2{font-size:26px;letter-spacing:-.7px;margin:0 0 4px}.heading p{margin:0;color:var(--muted)}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:15px}.metric,.panel{background:var(--panel);border:1px solid var(--line);border-radius:13px;box-shadow:0 4px 18px #1d2a3807}.metric{padding:17px}.metric label{color:var(--muted);font-weight:650;font-size:12px}.metric strong{display:block;font-size:28px;letter-spacing:-1px;margin:7px 0}.metric small{color:var(--muted)}
+.cols{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.panel{padding:18px;margin-bottom:14px}.panel h3{font-size:15px;margin:0 0 13px}.rec{padding:12px 0;border-top:1px solid #edf0f2;display:flex;gap:12px}.rec:first-of-type{border-top:0}.dot{width:8px;height:8px;border-radius:50%;background:var(--orange);margin-top:5px;flex:none}.rec b{display:block;margin-bottom:4px}.rec p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.pill{display:inline-block;border-radius:30px;padding:4px 9px;font-size:10px;font-weight:800;background:#eef2f5;color:#58636e}.pill.high,.pill.urgent{background:#fff0ed;color:#c34c32}.pill.approved,.pill.executed{background:#eaf7ef;color:#16834a}.pill.rejected{background:#fceeee;color:#b6383e}
+.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:700px}th,td{text-align:left;padding:12px;border-top:1px solid #edf0f2;vertical-align:top}th{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:#7c8792;background:#fafbfc}td{font-size:12px;color:#46515c}td b{color:#28323c}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.actions .btn{font-size:11px;padding:7px 10px}.copy{white-space:pre-wrap;line-height:1.5;max-width:560px}.empty{padding:24px;text-align:center;color:var(--muted)}
+.notice{border:1px solid #f0dfbd;background:#fff9ed;color:#805a17;border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.5;margin-bottom:14px}
+.view{display:none}.view.active{display:block}
+@media(max-width:900px){.shell{grid-template-columns:1fr}.side{padding:12px;position:sticky;top:0;z-index:5}.brand{padding:4px 8px 10px}.brand small,.navlabel,.sidefoot{display:none}.nav{display:flex;overflow:auto;gap:5px}.nav button{white-space:nowrap;width:auto;padding:9px}.top{height:62px;padding:0 15px}.content{padding:18px 12px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.cols{grid-template-columns:1fr}.heading{flex-direction:column}}
+</style>
+</head>
+<body>
+<section id="login" class="login">
+ <div class="login-card">
+  <div class="logo"><span class="mark">EZ</span>EZ AUTO CONNECT</div>
+  <h1>AI Growth Agent</h1><p class="sub">Sign in with your existing EZ Auto Connect administrator account.</p>
+  <div class="field"><label for="email">Administrator email</label><input id="email" type="email" autocomplete="username" placeholder="you@example.com"></div>
+  <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Your password"></div>
+  <button id="loginBtn" class="btn primary">Sign in securely</button><div id="loginMsg" class="msg"></div>
+ </div>
+</section>
+<div id="app" class="shell hidden">
+ <aside class="side">
+  <div class="brand"><span class="mark">EZ</span>EZ AUTO CONNECT<small>AI GROWTH OPERATIONS</small></div>
+  <div class="navlabel">GROWTH AGENT</div>
+  <nav class="nav">
+   <button class="active" data-view="overview">◫ &nbsp;Overview</button>
+   <button data-view="approvals">✓ &nbsp;Approval queue</button>
+   <button data-view="marketing">✦ &nbsp;Marketing drafts</button>
+   <button data-view="dealers">♧ &nbsp;Dealer pipeline</button>
+  </nav>
+  <div class="sidefoot">Autonomous internal workflows<br>Human approval for external actions</div>
+ </aside>
+ <main>
+  <header class="top"><h1 id="pageTitle">AI Growth Agent</h1><span class="spacer"></span><span class="user" id="userEmail"></span><button id="refreshBtn" class="btn">Refresh</button><button id="logoutBtn" class="btn">Sign out</button></header>
+  <div class="content">
+   <section id="view-overview" class="view active">
+    <div class="heading"><div><h2>Growth operations</h2><p>Your AI agent monitors leads, dealership opportunities and marketing actions.</p></div><button id="runBtn" class="btn primary">▶ Run Growth Agent</button></div>
+    <div class="notice"><b>Human approval is active.</b> The agent can analyse CRM records and create internal follow-up tasks and draft content. It does not send WhatsApp messages, publish social posts, allocate customer leads or make financial commitments without a separate approved workflow.</div>
+    <div id="metrics" class="metrics"><div class="metric"><label>Loading</label><strong>—</strong></div></div>
+    <div class="cols">
+     <div class="panel"><h3>AI recommendations</h3><div id="recommendations"><div class="empty">Loading recommendations…</div></div></div>
+     <div class="panel"><h3>Agent status</h3><div id="agentStatus" class="sub">Loading…</div><div style="height:14px"></div><h3>Marketing performance</h3><div id="campaignPerf" class="sub">No performance data loaded.</div></div>
+    </div>
+   </section>
+   <section id="view-approvals" class="view">
+    <div class="heading"><div><h2>Approval queue</h2><p>Review each draft before any external action is taken.</p></div></div>
+    <div class="notice">Approving an item records your review only. It does not send, publish or allocate anything. The appropriate connected channel and final action must still be completed separately.</div>
+    <div class="panel"><div class="tablewrap"><table><thead><tr><th>Action</th><th>Priority</th><th>Created</th><th>Status</th><th>Review</th></tr></thead><tbody id="approvalRows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody></table></div></div>
+   </section>
+   <section id="view-marketing" class="view">
+    <div class="heading"><div><h2>Marketing drafts</h2><p>Social posts, dealer outreach and customer follow-up copy generated for review.</p></div></div>
+    <div id="marketingCards"></div>
+   </section>
+   <section id="view-dealers" class="view">
+    <div class="heading"><div><h2>Dealer pipeline</h2><p>Dealership opportunities already recorded in the CRM.</p></div></div>
+    <div class="panel"><div class="tablewrap"><table><thead><tr><th>Dealership</th><th>Location</th><th>Contact</th><th>Status</th><th>Agent action</th></tr></thead><tbody id="dealerRows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody></table></div></div>
+   </section>
+  </div>
+ </main>
+</div>
+<script>
+const SUPABASE_URL="https://gxdvlinvfagdhhsrhwar.supabase.co";
+const SUPABASE_KEY="sb_publishable_A3S_CbOumpofbXl-MhtXFA_ykVnnOck";
+const ENDPOINT=SUPABASE_URL+"/functions/v1/growth-agent";
+let client=null,state={stats:{},actions:[],recommendations:[],campaign_performance:[]};
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const date=v=>v?new Date(v).toLocaleString("en-ZA",{dateStyle:"medium",timeStyle:"short"}):"—";
+function msg(id,text,error=false){$(id).textContent=text;$(id).className="msg"+(error?" error":"")}
+async function ready(){if(!window.supabase){await new Promise((resolve,reject)=>{const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";s.onload=resolve;s.onerror=reject;document.head.appendChild(s)})}client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}
+async function call(action,extra={}){const {data:{session}}=await client.auth.getSession();if(!session)throw Error("Your session has expired. Sign in again.");const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_KEY},body:JSON.stringify({action,...extra})});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Growth Agent request failed");return d}
+async function signIn(){const b=$("loginBtn");b.disabled=true;msg("loginMsg","Signing in…");try{await ready();const {data,error}=await client.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)throw error;await showApp(data.user.email)}catch(e){msg("loginMsg",e.message||"Sign-in failed",true)}finally{b.disabled=false}}
+async function showApp(email){$("login").classList.add("hidden");$("app").classList.remove("hidden");$("userEmail").textContent=email||"";await refresh()}
+async function signOut(){await client.auth.signOut();location.reload()}
+function money(v){return new Intl.NumberFormat("en-ZA",{style:"currency",currency:"ZAR",maximumFractionDigits:0}).format(Number(v||0))}
+async function refresh(){try{state=await call("dashboard");render()}catch(e){$("agentStatus").textContent=e.message}}
+function render(){
+ const s=state.stats||{};
+ const metrics=[["CRM leads",s.total_leads],["Hot leads",s.hot_leads],["Active pipeline",s.active_pipeline],["Dealer partners",s.dealer_partners],["Dealer prospects",s.dealer_prospects],["Successful sales",s.successful_sales],["Potential sale fees",money(s.revenue_at_risk)],["Pending approvals",s.pending_approvals]];
+ $("metrics").innerHTML=metrics.map(x=>'<div class="metric"><label>'+esc(x[0])+'</label><strong>'+esc(x[1]??0)+'</strong><small>Live CRM data</small></div>').join("");
+ $("recommendations").innerHTML=(state.recommendations||[]).map(x=>'<div class="rec"><span class="dot"></span><div><b>'+esc(x.title)+' <span class="pill '+esc(x.priority)+'">'+esc(x.priority)+'</span></b><p>'+esc(x.detail)+'</p></div></div>').join("")||'<div class="empty">No recommendations.</div>';
+ const run=state.last_run;$("agentStatus").innerHTML='<b>Execution mode:</b> Autonomous internal workflows<br><b>External actions:</b> Human approval required<br><b>AI model:</b> '+(state.ai_configured?"Configured":"Template fallback – model key not configured")+'<br><b>Last run:</b> '+(run?date(run.completed_at||run.started_at):"Not run yet")+'<br><b>Run status:</b> '+(run?esc(run.status):"Awaiting first run")+'<br><b>Permission check:</b> '+(s.consent_opted_in||0)+' opted in · '+(s.consent_unknown||0)+' unknown · '+(s.consent_opted_out||0)+' opted out';
+ $("campaignPerf").innerHTML=(state.campaign_performance||[]).slice(0,6).map(x=>'<div style="padding:7px 0;border-top:1px solid #edf0f2"><b>'+esc(x.campaign_name||x.source||"Campaign")+'</b><br>'+esc(x.total_leads||0)+' leads · '+esc(x.won_leads||0)+' wins</div>').join("")||"No campaign performance has been recorded yet.";
+ const actions=state.actions||[];
+ const pending=actions.filter(x=>x.status==="pending");
+ $("approvalRows").innerHTML=pending.map(x=>'<tr><td><b>'+esc(x.title)+'</b><br><span class="sub">'+esc(x.description)+'</span></td><td><span class="pill '+esc(x.priority)+'">'+esc(x.priority)+'</span></td><td>'+date(x.created_at)+'</td><td><span class="pill">'+esc(x.status)+'</span></td><td><div class="actions"><button class="btn primary" data-approve="'+esc(x.id)+'">Approve</button><button class="btn" data-reject="'+esc(x.id)+'">Reject</button></div></td></tr>').join("")||'<tr><td colspan="5" class="empty">No actions awaiting approval.</td></tr>';
+ const drafts=actions.filter(x=>["marketing_content_draft","dealer_outreach_draft","customer_followup_draft"].includes(x.action_type));
+ $("marketingCards").innerHTML=drafts.map(x=>'<div class="panel"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><h3>'+esc(x.title)+'</h3><span class="pill '+esc(x.status)+'">'+esc(x.status)+'</span></div><p class="sub">'+esc(x.description)+'</p><div class="copy">'+esc(x.payload?.copy||x.payload?.draft||"")+'</div><div class="actions" style="margin-top:14px"><button class="btn" data-copy="'+esc(x.id)+'">Copy draft</button>'+(x.status==="pending"?'<button class="btn primary" data-approve="'+esc(x.id)+'">Approve draft</button><button class="btn" data-reject="'+esc(x.id)+'">Reject</button>':"")+'</div></div>').join("")||'<div class="panel empty">No drafts yet. Run the Growth Agent to generate content.</div>';
+ const dealerActions=actions.filter(x=>x.action_type==="dealer_outreach_draft");
+ $("dealerRows").innerHTML=dealerActions.map(x=>'<tr><td><b>'+esc(x.payload?.dealership_name||x.title)+'</b></td><td>'+esc([x.payload?.city,x.payload?.province].filter(Boolean).join(", ")||"—")+'</td><td>'+esc(x.payload?.contact_name||"—")+'<br>'+esc(x.payload?.contact_email||x.payload?.contact_phone||"")+'</td><td><span class="pill">'+esc(x.status)+'</span></td><td>'+esc(x.title)+'</td></tr>').join("")||'<tr><td colspan="5" class="empty">No dealer outreach drafts yet. Dealership prospect records will appear after an agent run.</td></tr>';
+}
+async function runAgent(){const b=$("runBtn");b.disabled=true;b.textContent="Running…";try{const r=await call("run");await refresh();alert("Growth Agent run completed.\nLeads scanned: "+r.leads_scanned+"\nFollow-up tasks created: "+r.followup_tasks_created+"\nDrafts created: "+r.drafts_created+"\nDealer prospects: "+r.dealership_prospects)}catch(e){alert(e.message)}finally{b.disabled=false;b.textContent="▶ Run Growth Agent"}}
+async function review(id,decision){try{await call(decision+"_action",{action_id:id});await refresh()}catch(e){alert(e.message)}}
+document.addEventListener("click",async e=>{const a=e.target.closest("[data-approve]"),r=e.target.closest("[data-reject]"),c=e.target.closest("[data-copy]");if(a)await review(a.dataset.approve,"approve");if(r)await review(r.dataset.reject,"reject");if(c){const x=state.actions.find(y=>y.id===c.dataset.copy);const t=x?.payload?.copy||x?.payload?.draft||"";if(t)await navigator.clipboard.writeText(t)}});
+document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));$("view-"+b.dataset.view).classList.add("active");document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===b));$("pageTitle").textContent=({overview:"AI Growth Agent",approvals:"Approval queue",marketing:"Marketing drafts",dealers:"Dealer pipeline"})[b.dataset.view]});
+$("loginBtn").onclick=signIn;$("password").addEventListener("keydown",e=>{if(e.key==="Enter")signIn()});$("logoutBtn").onclick=signOut;$("refreshBtn").onclick=refresh;$("runBtn").onclick=runAgent;
+ready().then(async()=>{const {data:{session}}=await client.auth.getSession();if(session)await showApp(session.user.email)}).catch(e=>msg("loginMsg","Unable to initialise secure sign-in: "+e.message,true));
+</script>
+</body></html>
