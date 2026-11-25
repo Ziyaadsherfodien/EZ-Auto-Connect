@@ -8,6 +8,18 @@ Independent, customer-first vehicle enquiry and finance proposal comparison plat
 - Dealership portal: https://ez-auto-connect.ezautoconnect.workers.dev/dealer.html
 - Administrator CRM: https://ez-auto-connect.ezautoconnect.workers.dev/admin.html
 
+
+
+## AI Growth Agent
+- Growth Agent dashboard source: `growth-agent.html` (intended route: `https://ez-auto-connect.ezautoconnect.workers.dev/growth-agent.html`).
+- Supabase Edge Function: `growth-agent` (JWT and active administrator profile required).
+- Internal action queue: `app.growth_agent_actions`; RLS enabled and accessed through the administrator Edge Function.
+- Hourly internal automation: `ezac-growth-agent-hourly` creates follow-up tasks for stale leads and dealer outreach drafts. It does not send external messages or publish content.
+- The manual agent run creates marketing and customer/dealer message drafts. LLM copy generation uses `OPENAI_API_KEY` if configured; safe templates are used when no model key is configured.
+- Approval records administrator review only. WhatsApp sends, social publishing, customer lead allocation and financial commitments remain separate human-controlled actions.
+- Contact permissions are not inferred or changed. Unknown and opted-out marketing contacts are not eligible for campaigns.
+- Deployment status: backend and database automation deployed; dashboard HTML committed but not confirmed live on the Cloudflare Worker. See `cloudflare/GROWTH-AGENT-DEPLOYMENT.md`.
+
 ## Supabase project
 - Project ref: `gxdvlinvfagdhhsrhwar`
 - Public lead intake: `lead-intake`
