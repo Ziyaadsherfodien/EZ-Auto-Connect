@@ -28,6 +28,17 @@ Independent, customer-first vehicle enquiry and finance proposal comparison plat
 - Customer portal and ID submission API: `customer-portal`
 - Credit bureau consent and Experian integration API: `credit-bureau`
 
+## Customer Documents Vault
+
+- The customer portal includes a private Documents Vault for Drivers Licence, Proof of Address, 3-month Bank Statements, 3 months of Payslips, and an optional latest IRP5.
+- Customers must have an approved identity verification before the supporting-document upload endpoint accepts uploads. This is enforced in both the customer UI and the authenticated `customer-portal` Edge Function.
+- Identity documents remain in the private `customer-identity-documents` bucket. Supporting documents remain in the private `customer-supporting-documents` bucket. Both buckets restrict uploads to PDF/JPG/PNG and 10 MB per file.
+- Supporting documents are initially marked Pending review. Active EZ administrators can open short-lived signed links and approve or reject each supporting document from the Contacts > Customer Documents Vault panel. Rejections require a reason that is shown to the customer; customers can upload a corrected replacement.
+- Document review decisions are audit logged. Dealerships are not given general access to the customer vault; sharing must be handled through a separate authorised, purpose-specific process.
+- Database migration: `supabase/migrations/20261127120000_add_customer_document_review_and_irp5.sql`.
+- Supabase Edge Functions: `customer-portal` and `admin-crm` updated and deployed.
+- Frontend changes are committed to GitHub. The existing Cloudflare Worker is an assets-only script with no source/build configuration in this repository; its static assets have not been safely redeployed from this session. Do not claim the live Worker is updated until the existing asset bundle is reconciled and deployed, then test the customer and admin journeys end-to-end.
+
 ## Customer identity verification
 1. Customer creates an account and verifies their email address.
 2. Customer registration is linked to their own customer record.
