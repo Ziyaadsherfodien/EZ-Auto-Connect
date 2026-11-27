@@ -446,3 +446,4 @@ $("copyFeedback").onclick=()=>{const t=$("feedbackText").value;if(!t.trim())retu
 $("copySite").onclick=()=>navigator.clipboard?.writeText("https://ez-auto-connect.ezautoconnect.workers.dev/").then(()=>message("inviteMsg","Website link copied.","ok"));
 clientReady.then(()=>client.auth.getSession()).then(({data})=>{if(data.session)showApp()}).catch(e=>{console.error("Login initialisation failed:",e);message("loginMsg","Unable to load secure sign-in. Check your internet connection, then refresh the page.","error")})
 </script></body></html>
+<!-- Cloudflare deployment refresh: 2026-11-27 -->
