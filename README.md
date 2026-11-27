@@ -34,9 +34,9 @@ Independent, customer-first vehicle enquiry and finance proposal comparison plat
 - Customers must have an approved identity verification before the supporting-document upload endpoint accepts uploads. This is enforced in both the customer UI and the authenticated `customer-portal` Edge Function.
 - Identity documents remain in the private `customer-identity-documents` bucket. Supporting documents remain in the private `customer-supporting-documents` bucket. Both buckets restrict uploads to PDF/JPG/PNG and 10 MB per file.
 - Supporting documents are initially marked Pending review. Active EZ administrators can open short-lived signed links and approve or reject each supporting document from the Contacts > Customer Documents Vault panel. Rejections require a reason that is shown to the customer; customers can upload a corrected replacement.
-- Document review decisions are audit logged. Dealerships are not given general access to the customer vault; sharing must be handled through a separate authorised, purpose-specific process.
-- Database migration: `supabase/migrations/20261127120000_add_customer_document_review_and_irp5.sql`.
-- Supabase Edge Functions: `customer-portal` and `admin-crm` updated and deployed.
+- Document review decisions are audit logged. Customers can select an eligible allocated dealership/enquiry and share only individually selected, EZ-approved supporting documents. Each share records a separate versioned consent record, dealership, enquiry, document IDs and timestamp. Customers can withdraw each sharing grant; the dealer portal checks the live grant before issuing a 120-second signed URL. ID verification documents remain admin-only and are not part of supporting-document sharing.
+- Database migrations: `supabase/migrations/20261127120000_add_customer_document_review_and_irp5.sql` and `supabase/migrations/20261127123000_add_customer_document_sharing_consent.sql`.
+- Supabase Edge Functions: `customer-portal`, `admin-crm` and `dealer-portal` updated and deployed.
 - Frontend changes are committed to GitHub. The existing Cloudflare Worker is an assets-only script with no source/build configuration in this repository; its static assets have not been safely redeployed from this session. Do not claim the live Worker is updated until the existing asset bundle is reconciled and deployed, then test the customer and admin journeys end-to-end.
 
 ## Customer identity verification
